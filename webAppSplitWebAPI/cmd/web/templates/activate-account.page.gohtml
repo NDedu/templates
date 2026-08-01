@@ -1,0 +1,33 @@
+{{template "base" .}}
+
+{{define "title"}}
+    Activate Account
+{{end}}
+
+{{define "content"}}
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="w-100 mb-5" style="max-width: 400px;">
+            {{if .Error}}
+                <div class="alert alert-danger text-center">{{.Error}}</div>
+                <p class="text-center"><a href="/resend-activation">Resend activation link</a></p>
+            {{else}}
+                <div class="alert text-center" id="activate-messages">
+                    <div class="spinner-border spinner-border-sm" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    Activating your account...
+                </div>
+            {{end}}
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    {{if not .Error}}
+        <script>
+            let activateEmail = '{{index .Data "email"}}';
+            let signedUrl = '{{index .Data "signed_url"}}';
+        </script>
+        <script src="/static/js/activate_account.js"></script>
+    {{end}}
+{{end}}

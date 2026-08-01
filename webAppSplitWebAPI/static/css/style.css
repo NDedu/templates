@@ -1,0 +1,48 @@
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+
+}
+
+#theme-icon {
+    filter: invert(1);
+}
+[data-bs-theme="light"] #theme-icon {
+    filter: invert(0);
+}
+
+
+#book-search {
+    border-bottom-width: 1px;
+    box-shadow: none !important;
+}
+
+#book-search:focus {
+    border-color: inherit;
+    outline: none;
+}
+
+#search-results {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.dropdown-item.focused {
+    background-color: var(--bs-dropdown-link-hover-bg);
+    color: var(--bs-dropdown-link-hover-color);
+}
+
+.was-validated .form-control:valid,
+.was-validated .form-select:valid {
+    border-color: var(--bs-border-color);
+    background-image: none;
+    box-shadow: none;
+}
+.was-validated .form-control:valid:focus,
+.was-validated .form-select:valid:focus {
+    border-color: var(--bs-border-color);
+    box-shadow: none;
+}

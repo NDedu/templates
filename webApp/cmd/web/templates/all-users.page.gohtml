@@ -1,0 +1,46 @@
+{{template "base" .}}
+
+{{define "title"}}
+    Users
+{{end}}
+
+{{define "content"}}
+
+    <div class="d-flex justify-content-between align-items-center mt-5">
+        <h2 class="mb-0">Users</h2>
+        <a class="btn btn-info" href="/admin/add-user">Add User</a>
+    </div>
+    <hr>
+
+    <div style="min-height: 275px">
+        <table id="users-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="sortable" data-sort="name" style="cursor:pointer">Name <span class="sort-icon" style="font-size:0.65em;opacity:0.6"></span></th>
+                    <th class="sortable" data-sort="email" style="cursor:pointer">Email <span class="sort-icon" style="font-size:0.65em;opacity:0.6"></span></th>
+                    <th class="sortable" data-sort="role" style="cursor:pointer">Role <span class="sort-icon" style="font-size:0.65em;opacity:0.6"></span></th>
+                    <th class="sortable" data-sort="status" style="cursor:pointer">Status <span class="sort-icon" style="font-size:0.65em;opacity:0.6"></span></th>
+                    <th style="width: 40px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <nav>
+        <ul id="paginator" class="pagination">
+
+        </ul>
+    </nav>
+
+{{end}}
+
+{{define "js"}}
+    <script>
+        let csrfToken = '{{index .StringMap "csrf_token"}}';
+        let deviceId = '{{index .StringMap "device_id"}}';
+    </script>
+    <script src="/static/js/all_users.js"></script>
+{{end}}

@@ -1,0 +1,75 @@
+{{template "base" .}}
+
+{{define "title"}}
+    Books
+{{end}}
+
+{{define "content"}}
+
+    <div class="d-flex justify-content-between align-items-center mt-5">
+        <h2 class="mb-0">All Books</h2>
+        {{if .IsAdmin}}
+        <a class="btn btn-info" href="#!" id="add-book-btn" onclick="showAddModal()">Add Book</a>
+        {{end}}
+    </div>
+    <hr>
+
+    <div style="min-height: 275px">
+        <table id="books-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="sortable" data-sort="name" style="cursor:pointer">Name <span class="sort-icon" style="font-size:0.65em;opacity:0.6"></span></th>
+                    <th class="sortable" data-sort="description" style="cursor:pointer">Description <span class="sort-icon" style="font-size:0.65em;opacity:0.6"></span></th>
+                    <th style="width: 40px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <nav>
+        <ul id="paginator" class="pagination">
+
+        </ul>
+    </nav>
+
+    {{if .IsAdmin}}
+    <div class="modal fade" id="add-book-modal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBookModalLabel">Add Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="add-name-input" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="add-name-input">
+                        <div class="field-error d-none text-danger small mt-1" id="err-name"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="add-description-input" class="form-label">Description</label>
+                        <textarea class="form-control" id="add-description-input" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmAddBook()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{end}}
+
+{{end}}
+
+{{define "js"}}
+    <script>
+        let csrfToken = '{{index .StringMap "csrf_token"}}';
+        let deviceId = '{{index .StringMap "device_id"}}';
+        let isAdmin = {{.IsAdmin}};
+    </script>
+    <script src="/static/js/all_books.js"></script>
+{{end}}

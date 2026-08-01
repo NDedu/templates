@@ -1,0 +1,42 @@
+{{template "base" .}}
+
+{{define "title"}}
+    Login
+{{end}}
+
+{{define "content"}}
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="w-100 mb-5" style="max-width: 400px;">
+            <div class="alert d-none text-center" id="login-messages"></div>
+            <form id="login_form"
+                class="card p-4 shadow-sm needs-validation"
+                novalidate>
+                <h2 class="mt-2 text-center mb-4">Login</h2>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required autocomplete="email">
+                    <div class="field-error d-none text-danger small mt-1" id="err-email"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required autocomplete="current-password">
+                    <div class="field-error d-none text-danger small mt-1" id="err-password"></div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+                <p class="mt-2">
+                    <small><a href="/register">Register</a></small>
+                </p>
+            </form>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+        let csrfToken = '{{index .StringMap "csrf_token"}}';
+        let deviceId = '{{index .StringMap "device_id"}}';
+    </script>
+    <script src="/static/js/login.js"></script>
+{{end}}

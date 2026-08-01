@@ -1,0 +1,99 @@
+{{template "base" .}}
+
+{{define "title"}}
+    Add User
+{{end}}
+
+{{define "content"}}
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="w-100 mb-5" style="max-width: 400px;">
+            <div id="messages" class="d-flex justify-content-center">
+                <div id="messages-inner" class="d-none alert text-center" style="max-width: 400px; width: 100%;"></div>
+            </div>
+
+            <form name="add_user_form" id="add-user-form"
+                class="card p-4 shadow-sm needs-validation"
+                autocomplete="off" novalidate="">
+
+                <h2 class="mt-2 text-center mb-4">Add User</h2>
+
+                <div class="mb-3">
+                    <label for="first-name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="first-name" required="" autocomplete="first-name-new">
+                    <div class="field-error d-none text-danger small mt-1" id="err-first_name"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="last-name" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="last-name" required="" autocomplete="last-name-new">
+                    <div class="field-error d-none text-danger small mt-1" id="err-last_name"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required="" autocomplete="email-new">
+                    <div class="field-error d-none text-danger small mt-1" id="err-email"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required="" autocomplete="new-password" minlength="8" maxlength="72">
+                    <div class="field-error d-none text-danger small mt-1" id="err-password"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select class="form-select" id="role" required="">
+                        <option value="user">user</option>
+                        <option value="editor">editor</option>
+                        <option value="admin">admin</option>
+                    </select>
+                    <div class="field-error d-none text-danger small mt-1" id="err-role"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" required="">
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between">
+                    <a class="btn btn-info" href="/admin/all-users">Back</a>
+                    <a class="btn btn-success" href="#!" onclick="showSaveModal()">Save</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="save-modal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveModalLabel">Confirm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to create this user?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmSave()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{end}}
+
+{{define "js"}}
+    <script>
+        let csrfToken = '{{index .StringMap "csrf_token"}}';
+        let deviceId = '{{index .StringMap "device_id"}}';
+    </script>
+    <script src="/static/js/add_user.js"></script>
+{{end}}

@@ -1,0 +1,33 @@
+{{template "base" .}}
+
+{{define "title"}}
+    Resend activation
+{{end}}
+
+{{define "content"}}
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="w-100 mb-5" style="max-width: 400px;">
+            <div class="alert d-none text-center" id="resend-activation-messages"></div>
+            <form id="resend_activation_form"
+                class="card p-4 shadow-sm needs-validation"
+                novalidate>
+                <h2 class="mt-2 text-center mb-4">Resend activation link</h2>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required autocomplete="email-new">
+                </div>
+                <div class="d-grid">
+                    <button id="resend_btn" type="submit" class="btn btn-primary">Resend activation link</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+        let csrfToken = '{{index .StringMap "csrf_token"}}';
+        let deviceId = '{{index .StringMap "device_id"}}';
+    </script>
+    <script src="/static/js/resend_activation.js"></script>
+{{end}}
