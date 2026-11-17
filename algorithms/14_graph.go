@@ -7,32 +7,31 @@ import "math"
 // dag: directed acyclic graph; node - vertex/point; edge - connection between 2  nodes
 
 type CompleteGraphEdge struct {
-	From	int
-	To		int
-	Weight	int
+	From   int
+	To     int
+	Weight int
 }
 
 type GraphEdge struct {
-	To		int
-	Weight	int
+	To     int
+	Weight int
 }
 
 type WeightedAdjList struct {
-	List	[][]GraphEdge
+	List [][]GraphEdge
 }
 
 type WeightedAdjMatrix struct {
-	Matrix	[][]int // A number means weight
+	Matrix [][]int // A number means weight
 }
 
 type AdjList struct {
-	List	[][]int
+	List [][]int
 }
 
 type AdjMatrix struct {
-	Matrix	[][]int // A 1 means connected
+	Matrix [][]int // A 1 means connected
 }
-
 
 // BFS - O(vertex^2) now but O(v + e) if adj list
 func (graph *WeightedAdjMatrix) BFS(source, needle int) []int {
@@ -48,7 +47,7 @@ func (graph *WeightedAdjMatrix) BFS(source, needle int) []int {
 		prev[i] = -1 // No parents yet
 	}
 
-	seen[source] = true // Seen source because queue contains source
+	seen[source] = true    // Seen source because queue contains source
 	queue := []int{source} // Can use a proper Queue struct here
 
 	for len(queue) > 0 {
@@ -61,7 +60,7 @@ func (graph *WeightedAdjMatrix) BFS(source, needle int) []int {
 		queue = queue[1:]
 
 		for neighbor, weight := range graph.Matrix[curr] {
-			
+
 			// If there is an edge and we haven't visited it yet
 			if weight > 0 && !seen[neighbor] {
 				seen[neighbor] = true
@@ -127,7 +126,7 @@ func (graph *WeightedAdjList) DFS(source, needle int) []int {
 	if len(graph.List) == 0 {
 		return nil
 	}
-	
+
 	seen := make([]bool, len(graph.List))
 	var path []int
 
@@ -139,7 +138,7 @@ func hasUnvisited(seen []bool, dists []int) bool {
 	for i, s := range seen {
 
 		// Visit all seen and check if false and distance < infinity
-		if !s && dists[i] < math.MaxInt32 {
+		if !s && dists[i] < math.MaxInt {
 			return true
 		}
 	}
@@ -150,7 +149,7 @@ func hasUnvisited(seen []bool, dists []int) bool {
 func getLowestUnvisited(seen []bool, dists []int) int {
 
 	idx := -1
-	lowestDistance := math.MaxInt32
+	lowestDistance := math.MaxInt
 
 	for i := range len(seen) {
 
@@ -163,16 +162,17 @@ func getLowestUnvisited(seen []bool, dists []int) int {
 }
 
 // Dijkstra - Shortest path, O(v^2) - but can be O((v + e) log v) if getLowestUnvisited changed to Priority Queue (MinHeap)
+// Weights must not be negative: a visited node is final, and a negative edge found later could still shorten its path
 func (graph *WeightedAdjList) Dijkstra(source, needle int) []int {
 
 	seen := make([]bool, len(graph.List))
-	prev := make([]int, len(graph.List)) // To know way back
+	prev := make([]int, len(graph.List))  // To know way back
 	dists := make([]int, len(graph.List)) // Array with distances
 
 	// Fill the previous with no parents, and distances with "infinity" (nodes get max distance until visited)
 	for i := 0; i < len(graph.List); i++ {
 		prev[i] = -1
-		dists[i] = math.MaxInt32
+		dists[i] = math.MaxInt
 	}
 
 	// Distance of the starting point
@@ -185,7 +185,7 @@ func (graph *WeightedAdjList) Dijkstra(source, needle int) []int {
 		if curr == -1 {
 			break
 		}
-		
+
 		seen[curr] = true
 
 		// Check all edges
@@ -194,7 +194,7 @@ func (graph *WeightedAdjList) Dijkstra(source, needle int) []int {
 			if seen[edge.To] {
 				continue
 			}
-			
+
 			// Calculate distance and if it's better we push it
 			dist := dists[curr] + edge.Weight
 			if dist < dists[edge.To] {

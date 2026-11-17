@@ -10,17 +10,20 @@ package main
 //		Separate Chaining: Each array slot holds a pointer to a Linked List of entries. If two keys hash to index 5, they both get added to the linked list at index 5
 //		Open Addressing: If a slot is taken, we scan the array for the next available empty slot and put it there
 
+// maxLoadFactor - when size / capacity goes above it, the bucket array doubles and every entry is rehashed
+const maxLoadFactor = 0.75
+
 // Entry - single key-value pair, like a Linked List node
 type Entry struct {
-	key		string
-	value	int
-	next	*Entry // Pointer to the next entry in case of a collision
+	key   string
+	value int
+	next  *Entry // Pointer to the next entry in case of a collision
 }
 
 type HashMap struct {
-	buckets		[]*Entry // Array of pointers to Entries (the buckets)
-	capacity	int      // Buckets in the array
-	size		int      // Total key-value pairs stored
+	buckets  []*Entry // Array of pointers to Entries (the buckets)
+	capacity int      // Buckets in the array
+	size     int      // Total key-value pairs stored
 }
 
 func NewHashMap(capacity int) *HashMap {
@@ -30,29 +33,31 @@ func NewHashMap(capacity int) *HashMap {
 	}
 
 	return &HashMap{
-		buckets:	make([]*Entry, capacity), // An array filled with nil pointers
-		capacity:	capacity,
-		size:		0,
+		buckets:  make([]*Entry, capacity), // An array filled with nil pointers
+		capacity: capacity,
+		size:     0,
 	}
 }
 
 // hash turns a string key into an array index
-// Iterates over the characters of the string, calculates a large numeric value, and using modulo to fit it into the array
 func (m *HashMap) hash(key string) int {
+	return hashKey(key, m.capacity)
+}
 
-	var hashVal int
+// hashKey - shared by all the maps (HashMap, LinkedHashMap, ConcurrentHashMap)
+// Iterates over the characters of the string, calculates a large numeric value, and using modulo to fit it into the array
+func hashKey(key string, capacity int) int {
+
+	// Unsigned: overflow wraps around and the value can never be negative
+	// (with int, a hash that wraps to MinInt64 stays negative even after hashVal = -hashVal)
+	var hashVal uint64
 	for i := 0; i < len(key); i++ {
 		// Multiply current hash by a prime number (31) and add the ASCII value of the character
-		hashVal = (hashVal * 31) + int(key[i])
-	}
-
-	// Ensure the hash is a positive number
-	if hashVal < 0 {
-		hashVal = -hashVal
+		hashVal = (hashVal * 31) + uint64(key[i])
 	}
 
 	// Modulo operator (%) ensures the final index fits within the bucket array bounds (0 to capacity - 1)
-	return hashVal % m.capacity
+	return int(hashVal % uint64(capacity))
 }
 
 // Put - inserts a new key-value pair into the map, or updates an existing key
@@ -78,14 +83,46 @@ func (m *HashMap) Put(key string, value int) {
 	// The key does not exist, create new Entry
 	// Insert it at the front of the linked list for this bucket (O(1) insertion time)
 	newEntry := &Entry{
-		key:	key,
-		value:	value,
-		next:	head, // Point new entry's 'next' to the old head
+		key:   key,
+		value: value,
+		next:  head, // Point new entry's 'next' to the old head
 	}
 
 	// Update the bucket array to point new entry as the new head
 	m.buckets[index] = newEntry
 	m.size++
+
+	// Too many entries per bucket means long chains to walk: grow and rehash
+	if float64(m.size)/float64(m.capacity) > maxLoadFactor {
+		m.resize()
+	}
+}
+
+// resize - doubles the buckets and moves every entry into its new bucket (the index depends on the capacity)
+// O(n), but it only happens each time the size doubles, so Put stays O(1) on average (amortized)
+func (m *HashMap) resize() {
+
+	newCapacity := m.capacity * 2
+	newBuckets := make([]*Entry, newCapacity)
+
+	for _, head := range m.buckets {
+
+		current := head
+		for current != nil {
+
+			next := current.next // Save it, the entry is relinked into its new bucket below
+			index := hashKey(current.key, newCapacity)
+
+			// Insert at the front of the new bucket
+			current.next = newBuckets[index]
+			newBuckets[index] = current
+
+			current = next
+		}
+	}
+
+	m.buckets = newBuckets
+	m.capacity = newCapacity
 }
 
 // Get - retrieves the value for a given key. Returns the value and a boolean indicating if it was successfully found
@@ -94,7 +131,7 @@ func (m *HashMap) Get(key string) (int, bool) {
 	index := m.hash(key)
 
 	current := m.buckets[index]
-	
+
 	// Traverse the linked list at this bucket (usually only 1 or 2 items long if the hash function is good)
 	for current != nil {
 
@@ -120,7 +157,7 @@ func (m *HashMap) Delete(key string) {
 	for current != nil {
 
 		if current.key == key {
-			
+
 			if prev == nil {
 				// The entry to delete is the head of the bucket
 				m.buckets[index] = current.next
@@ -128,11 +165,11 @@ func (m *HashMap) Delete(key string) {
 				// The entry is in the middle or end of the list.
 				prev.next = current.next
 			}
-			
+
 			m.size--
 			return
 		}
-		
+
 		prev = current
 		current = current.next
 	}

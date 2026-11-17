@@ -22,7 +22,7 @@ func BinarySearch(haystack []int, needle int) bool {
 	high := len(haystack)
 
 	for low < high {
-		midpoint := low + (high - low) / 2
+		midpoint := low + (high-low)/2
 		value := haystack[midpoint]
 
 		if value == needle {
@@ -39,18 +39,18 @@ func BinarySearch(haystack []int, needle int) bool {
 // BinarySearchRange O(log n)
 func BinarySearchRange(haystack []int, low int, high int, needle int) bool {
 
-    for low < high {
-        mid := low + (high-low)/2
-        if haystack[mid] == needle {
-            return true
-        }
-        if haystack[mid] < needle {
-            low = mid + 1
-        } else {
-            high = mid
-        }
-    }
-    return false
+	for low < high {
+		mid := low + (high-low)/2
+		if haystack[mid] == needle {
+			return true
+		}
+		if haystack[mid] < needle {
+			low = mid + 1
+		} else {
+			high = mid
+		}
+	}
+	return false
 }
 
 // InterpolationSearch for sorted arrays where data is uniformly distributed (like IDs)
@@ -61,19 +61,30 @@ func InterpolationSearch(haystack []int, needle int) bool {
 	high := len(haystack)
 
 	for low < high && needle >= haystack[low] && needle <= haystack[high-1] {
-		
+
 		// If the range has one element and needle is within range, it must be this one
-		if haystack[low] == haystack[high - 1] {
+		if haystack[low] == haystack[high-1] {
 			return haystack[low] == needle
 		}
 
 		// Formula: low + [(needle - min) * (max_idx - min_idx) / (max - min)]
-		pos := low + int(float64(needle - haystack[low]) * float64((high - 1) - low) / (float64(haystack[high - 1]) - float64(haystack[low])))
+		// Subtract as float64: as int, needle - min can overflow (e.g. MaxInt - MinInt)
+		minValue := float64(haystack[low])
+		maxValue := float64(haystack[high-1])
+		fraction := (float64(needle) - minValue) / (maxValue - minValue)
+
+		// float64 holds every integer only up to 2^53: beyond that, neighbouring values (like 64-bit IDs) can round
+		// to the same number, and the division becomes 0 / 0 = NaN. Fall back to the middle, like binary search
+		if !(fraction >= 0 && fraction <= 1) {
+			fraction = 0.5
+		}
+
+		pos := low + int(fraction*float64((high-1)-low))
 
 		if haystack[pos] == needle {
 			return true
 		}
-		
+
 		if haystack[pos] < needle {
 			low = pos + 1
 		} else {
@@ -117,7 +128,7 @@ func JumpSearch(haystack []int, needle int) bool {
 	high := step
 
 	// Jump blocks until the end of the block is greater than or equal to the needle or we reach the end of the haystack.
-	for high < n && haystack[high - 1] < needle {
+	for high < n && haystack[high-1] < needle {
 		low = high
 		high += step
 	}

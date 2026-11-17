@@ -4,9 +4,9 @@ package main
 // Terminology: root/head, leaves, height, branching factor, balanced tree
 
 type TreeNode struct {
-	Value		int
-	Children	[]*TreeNode
-	Parent		*TreeNode
+	Value    int
+	Children []*TreeNode
+	Parent   *TreeNode
 }
 
 func (node *TreeNode) Insert(child *TreeNode) {
@@ -39,7 +39,7 @@ func (node *TreeNode) Delete() {
 			copy(parent.Children[i:], parent.Children[i+1:])
 
 			// Memory cleanup
-			parent.Children[len(parent.Children) - 1] = nil
+			parent.Children[len(parent.Children)-1] = nil
 
 			// Decrease the children
 			parent.Children = parent.Children[:len(parent.Children)-1]

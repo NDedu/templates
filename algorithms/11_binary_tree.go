@@ -3,10 +3,10 @@ package main
 // BinaryTree - branching factor 2
 
 type BinaryTreeNode struct {
-	Value	int
-	Left	*BinaryTreeNode
-	Right	*BinaryTreeNode
-	Parent	*BinaryTreeNode
+	Value  int
+	Left   *BinaryTreeNode
+	Right  *BinaryTreeNode
+	Parent *BinaryTreeNode
 }
 
 // Insert at target node if it has space for children (from left to right)

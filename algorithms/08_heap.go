@@ -9,21 +9,22 @@ package main
 
 // MinHeap - root is the smallest
 type MinHeap struct {
-	array	[]int
+	array []int
 }
 
 // Insert - O(log n)
 func (heap *MinHeap) Insert(val int) {
 
 	heap.array = append(heap.array, val)
-	heapifyUp(heap.array, len(heap.array) - 1, true)
+	heapifyUp(heap.array, len(heap.array)-1, true)
 }
 
 // Delete - O(log n)
 func (heap *MinHeap) Delete() int {
 
+	// Returning 0 would look like a stored 0, so panic like Queue/Stack/RingBuffer do when empty
 	if len(heap.array) == 0 {
-		return 0
+		panic("heap is empty")
 	}
 
 	root := heap.array[0]
@@ -41,21 +42,22 @@ func (heap *MinHeap) Delete() int {
 
 // MaxHeap - root is the biggest
 type MaxHeap struct {
-	array	[]int
+	array []int
 }
 
 // Insert - O(log n)
 func (heap *MaxHeap) Insert(val int) {
 
 	heap.array = append(heap.array, val)
-	heapifyUp(heap.array, len(heap.array) - 1, false)
+	heapifyUp(heap.array, len(heap.array)-1, false)
 }
 
 // Delete - O(log n)
 func (heap *MaxHeap) Delete() int {
 
+	// Returning 0 would look like a stored 0, so panic like Queue/Stack/RingBuffer do when empty
 	if len(heap.array) == 0 {
-		return 0
+		panic("heap is empty")
 	}
 
 	root := heap.array[0]
@@ -76,11 +78,11 @@ func parentIdx(idx int) int {
 }
 
 func leftChildIdx(idx int) int {
-	return 2 * idx + 1
+	return 2*idx + 1
 }
 
 func rightChildIdx(idx int) int {
-	return 2 * idx + 2
+	return 2*idx + 2
 }
 
 // shouldMoveUp - MinHeap isMin true; MaxHeap isMin false

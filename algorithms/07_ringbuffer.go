@@ -4,11 +4,11 @@ package main
 // Avoids shifting and Enqueue and Dequeue are 0(1) (if not full)
 // Tail acts as the point where new elements are added and Head acts as the point where data leaves
 type RingBuffer struct {
-	data		[]int
-	capacity	int
-	head		int // The read pointer (oldest data)
-	tail		int // The write pointer (next empty slot)
-	length		int
+	data     []int
+	capacity int
+	head     int // The read pointer (oldest data)
+	tail     int // The write pointer (next empty slot)
+	length   int
 }
 
 func NewRingBuffer(capacity int) *RingBuffer {
@@ -18,11 +18,11 @@ func NewRingBuffer(capacity int) *RingBuffer {
 	}
 
 	return &RingBuffer{
-		data:		make([]int, capacity),
-		capacity:	capacity,
-		head:		0,
-		tail:		0,
-		length:		0,
+		data:     make([]int, capacity),
+		capacity: capacity,
+		head:     0,
+		tail:     0,
+		length:   0,
 	}
 }
 

@@ -7,32 +7,32 @@ package main
 // When the cache exceeds capacity, the item at the back of the list (Least Recently Used) is removed
 
 type LRUNode struct {
-	key		string
-	value	int
-	prev	*LRUNode
-	next	*LRUNode
+	key   string
+	value int
+	prev  *LRUNode
+	next  *LRUNode
 }
 
 type LRUCache struct {
-	capacity	int
-	cache		map[string]*LRUNode
-	head		*LRUNode // head and tail for easy access
-	tail		*LRUNode
+	capacity int
+	cache    map[string]*LRUNode
+	head     *LRUNode // head and tail for easy access
+	tail     *LRUNode
 }
 
 func NewLRUCache(capacity int) *LRUCache {
 
 	lru := &LRUCache{
-		capacity:	capacity,
-		cache:		make(map[string]*LRUNode),
-		head:		&LRUNode{},
-		tail:		&LRUNode{},
+		capacity: capacity,
+		cache:    make(map[string]*LRUNode),
+		head:     &LRUNode{},
+		tail:     &LRUNode{},
 	}
-	
+
 	// Connect dummy head and tail
 	lru.head.next = lru.tail
 	lru.tail.prev = lru.head
-	
+
 	return lru
 }
 
@@ -77,18 +77,18 @@ func (cache *LRUCache) Put(key string, value int) {
 		node.value = value
 		cache.removeNode(node)
 		cache.insertHead(node)
-	
+
 	} else {
 
 		// Create new node
 		newNode := &LRUNode{
-			key:	key,
-			value:	value,
+			key:   key,
+			value: value,
 		}
 
 		cache.cache[key] = newNode
 		cache.insertHead(newNode)
-		
+
 		// Evict if over capacity
 		if len(cache.cache) > cache.capacity {
 

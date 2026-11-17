@@ -1,11 +1,13 @@
 package main
 
+import "slices"
+
 // Here are just checks that the algorithms are working
 
 func main() {
 
 	// Array
-	
+
 	customArray := NewArray(3)
 	customArray.Set(0, 1)
 	customArray.Set(1, 2)
@@ -58,7 +60,7 @@ func main() {
 	hashMap.Put("apple", 1)
 	hashMap.Put("banana", 2)
 	hashMap.Put("cherry", 3)
-	
+
 	if val, ok := hashMap.Get("banana"); !ok || val != 2 {
 		panic("map get")
 	}
@@ -88,7 +90,7 @@ func main() {
 	treeMap.Put("c", 3)
 	treeMap.Put("a", 1)
 	treeMap.Put("b", 2)
-	
+
 	orderedKeys := treeMap.InOrderKeys()
 	if len(orderedKeys) != 3 || orderedKeys[0] != "a" || orderedKeys[1] != "b" || orderedKeys[2] != "c" {
 		panic("tree map order")
@@ -104,7 +106,7 @@ func main() {
 	linkedMap.Put("c", 3)
 	linkedMap.Put("a", 1)
 	linkedMap.Put("b", 2)
-	
+
 	insertionKeys := linkedMap.GetKeysInOrder()
 	if len(insertionKeys) != 3 || insertionKeys[0] != "c" || insertionKeys[1] != "a" || insertionKeys[2] != "b" {
 		panic("linked map order")
@@ -130,7 +132,7 @@ func main() {
 	if !LinearSearch(array, 5) {
 		panic("linear search")
 	}
-	
+
 	if !BinarySearch(primes, 5) || !BinarySearch(primes, 29) {
 		panic("binary search")
 	}
@@ -150,7 +152,7 @@ func main() {
 	if !JumpSearch(primes, 5) || !JumpSearch(primes, 29) {
 		panic("jump search")
 	}
-	
+
 	twoCrystalBalls := []bool{false, false, false, true, true}
 	if TwoCrystalBalls(twoCrystalBalls) != 3 {
 		panic("two crystal balls")
@@ -165,7 +167,6 @@ func main() {
 	sortArray3 := append([]int(nil), sortArray1...)
 	sortArray4 := append([]int(nil), sortArray1...)
 	sortArray5 := append([]int(nil), sortArray1...)
-	
 
 	BubbleSort(sortArray1)
 	InsertionSort(sortArray2)
@@ -173,37 +174,34 @@ func main() {
 	sortedArrayMerge := MergeSort(sortArray4)
 	HeapSort(sortArray5)
 
-	for k := range 5 {
+	if !slices.Equal(sortArray1, sortedArray) {
+		panic("bubble sort")
+	}
 
-		if sortArray1[k] != sortedArray[k] {
-			panic("bubble sort")
-		}
+	if !slices.Equal(sortArray2, sortedArray) {
+		panic("insertion sort")
+	}
 
-		if sortArray2[k] != sortedArray[k] {
-			panic("insertion sort")
-		}
+	if !slices.Equal(sortArray3, sortedArray) {
+		panic("quick sort")
+	}
 
-		if sortArray3[k] != sortedArray[k] {
-			panic("quick sort")
-		}
+	if !slices.Equal(sortedArrayMerge, sortedArray) {
+		panic("merge sort")
+	}
 
-		if sortedArrayMerge[k] != sortedArray[k] {
-			panic("merge sort")
-		}
-
-		if sortArray5[k] != sortedArray[k] {
-			panic("heap sort")
-		}
+	if !slices.Equal(sortArray5, sortedArray) {
+		panic("heap sort")
 	}
 
 	// Linked Lists
-	
+
 	var node1 Node
 	node1.Value = 10
 
-	node3 := Node {
+	node3 := Node{
 		Value: 10,
-		Next: nil,
+		Next:  nil,
 	}
 	node1.Next = &node3
 
@@ -221,7 +219,7 @@ func main() {
 	if node1.Next != &node3 {
 		panic("linked list deletion")
 	}
-	
+
 	// Singly Linked List
 
 	singlyList := &SinglyList{}
@@ -237,7 +235,7 @@ func main() {
 	}
 
 	// Doubly Lined List
-	
+
 	doublyList := &DoublyList{}
 	doublyList.InsertTail(10)
 	doublyList.InsertAt(0, 20)
@@ -262,7 +260,7 @@ func main() {
 	}
 
 	// Queue
-	
+
 	queue := &Queue{}
 	queue.Enqueue(10)
 	queue.Enqueue(20)
@@ -274,7 +272,7 @@ func main() {
 	}
 
 	// Stack
-	
+
 	stack := &Stack{}
 	stack.Push(10)
 	stack.Push(20)
@@ -297,17 +295,11 @@ func main() {
 		"#   #",
 		"#E###",
 	}
-	path := MazeSolver(maze, "#", Point{3, 0}, Point{1, 3})
+	path := MazeSolver(maze, '#', Point{3, 0}, Point{1, 3})
 	expectedPath := []Point{{3, 0}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}}
 
-	if len(path) != len(expectedPath) {
+	if !slices.Equal(path, expectedPath) {
 		panic("maze solver")
-	}
-
-	for i := range expectedPath {
-		if path[i] != expectedPath[i] {
-			panic("maze solver")
-		}
 	}
 
 	// Tree
@@ -317,33 +309,30 @@ func main() {
 	//  /  \    /  \
 	// 5    4  18  21
 
-	treeRoot := &TreeNode{ Value: 7 }
-	treeRoot.Insert(&TreeNode{ Value: 23 })
-	treeRoot.Insert(&TreeNode{ Value: 3 })
-	treeRoot.Children[0].Insert(&TreeNode{ Value: 5 })
-	treeRoot.Children[0].Insert(&TreeNode{ Value: 4 })
-	treeRoot.Children[1].Insert(&TreeNode{ Value: 18 })
-	treeRoot.Children[1].Insert(&TreeNode{ Value: 21 })
+	treeRoot := &TreeNode{Value: 7}
+	treeRoot.Insert(&TreeNode{Value: 23})
+	treeRoot.Insert(&TreeNode{Value: 3})
+	treeRoot.Children[0].Insert(&TreeNode{Value: 5})
+	treeRoot.Children[0].Insert(&TreeNode{Value: 4})
+	treeRoot.Children[1].Insert(&TreeNode{Value: 18})
+	treeRoot.Children[1].Insert(&TreeNode{Value: 21})
 
-	binaryTreeRoot := &BinaryTreeNode{ Value: 7 }
-	binaryTreeRoot.Insert(&BinaryTreeNode{ Value: 23 })
-	binaryTreeRoot.Insert(&BinaryTreeNode{ Value: 3 })
-	binaryTreeRoot.Left.Insert(&BinaryTreeNode{ Value: 5 })
-	binaryTreeRoot.Left.Insert(&BinaryTreeNode{ Value: 4 })
-	binaryTreeRoot.Right.Insert(&BinaryTreeNode{ Value: 18 })
-	binaryTreeRoot.Right.Insert(&BinaryTreeNode{ Value: 21 })
+	binaryTreeRoot := &BinaryTreeNode{Value: 7}
+	binaryTreeRoot.Insert(&BinaryTreeNode{Value: 23})
+	binaryTreeRoot.Insert(&BinaryTreeNode{Value: 3})
+	binaryTreeRoot.Left.Insert(&BinaryTreeNode{Value: 5})
+	binaryTreeRoot.Left.Insert(&BinaryTreeNode{Value: 4})
+	binaryTreeRoot.Right.Insert(&BinaryTreeNode{Value: 18})
+	binaryTreeRoot.Right.Insert(&BinaryTreeNode{Value: 21})
 
 	preOrderSearch := []int{7, 23, 5, 4, 3, 18, 21}
 	inOrderSearch := []int{5, 23, 4, 7, 18, 3, 21}
 	postOrderSearch := []int{5, 4, 23, 18, 21, 3, 7}
 
-	for i := range len(preOrderSearch) {
+	if !slices.Equal(treeRoot.PreOrderSearch(), preOrderSearch) || !slices.Equal(treeRoot.PostOrderSearch(), postOrderSearch) ||
+		!slices.Equal(binaryTreeRoot.PreOrderSearch(), preOrderSearch) || !slices.Equal(binaryTreeRoot.InOrderSearch(), inOrderSearch) || !slices.Equal(binaryTreeRoot.PostOrderSearch(), postOrderSearch) {
 
-		if treeRoot.PreOrderSearch()[i] != preOrderSearch[i] || treeRoot.PostOrderSearch()[i] != postOrderSearch[i] ||
-			binaryTreeRoot.PreOrderSearch()[i] != preOrderSearch[i] || binaryTreeRoot.InOrderSearch()[i] != inOrderSearch[i] || binaryTreeRoot.PostOrderSearch()[i] != postOrderSearch[i] {
-
-			panic("trees")
-		}
+		panic("trees")
 	}
 
 	if !binaryTreeRoot.BreadthFirstSearch(5) {
@@ -357,7 +346,8 @@ func main() {
 	//  /  \    /  \
 	// 3    7  12   20
 
-	bst := &BSTNode{ Value: 10 }
+	bst := &BST{}
+	bst.Insert(10)
 	bst.Insert(5)
 	bst.Insert(15)
 	bst.Insert(3)
@@ -374,19 +364,32 @@ func main() {
 		panic("bst find")
 	}
 
-	bst.Find(3).Delete()
+	bst.Delete(3)
 	if bst.Find(3) != nil || bst.FindMin().Value != 5 {
 		panic("bst delete leaf")
 	}
 
-	bst.Find(5).Delete()
-	if bst.Find(5) != nil || bst.Left == nil || bst.Left.Value != 7 {
+	bst.Delete(5)
+	if bst.Find(5) != nil || bst.Root.Left == nil || bst.Root.Left.Value != 7 {
 		panic("bst delete one children")
 	}
 
-	bst.Delete()
-	if bst.Value != 12 || bst.Find(12) == nil || bst.Find(7) == nil || bst.Find(15) == nil || bst.Find(20) == nil {
+	bst.Delete(10)
+	if bst.Root.Value != 12 || bst.Find(12) == nil || bst.Find(7) == nil || bst.Find(15) == nil || bst.Find(20) == nil {
 		panic("bst delete two children")
+	}
+
+	// Root with one child, then the last node
+	bst.Delete(7)
+	bst.Delete(15)
+	bst.Delete(12) // the root 12 has a single child: 20
+	if bst.Root == nil || bst.Root.Value != 20 || bst.Find(12) != nil {
+		panic("bst delete root")
+	}
+
+	bst.Delete(20)
+	if bst.Root != nil || bst.FindMin() != nil {
+		panic("bst delete last node")
 	}
 
 	// Heap
@@ -482,15 +485,12 @@ func main() {
 		{0, 0, 0, 0},
 	}
 	graphMatrix := &WeightedAdjMatrix{Matrix: matrix}
-	
+
 	bfsPath := graphMatrix.BFS(0, 3)
 	expectedBfsPath := []int{0, 2, 3}
 
-	for i := range expectedBfsPath {
-
-		if bfsPath[i] != expectedBfsPath[i] || len(bfsPath) != len(expectedBfsPath) {
-			panic("bfs path")
-		}
+	if !slices.Equal(bfsPath, expectedBfsPath) {
+		panic("bfs path")
 	}
 
 	list := [][]GraphEdge{
@@ -504,11 +504,8 @@ func main() {
 	dfsPath := graphList.DFS(0, 3)
 	expectedDfsPath := []int{0, 1, 2, 3}
 
-	for i := range expectedDfsPath {
-
-		if dfsPath[i] != expectedDfsPath[i] || len(dfsPath) != len(expectedDfsPath) {
-			panic("dfs path")
-		}
+	if !slices.Equal(dfsPath, expectedDfsPath) {
+		panic("dfs path")
 	}
 
 	dijkstraList := [][]GraphEdge{
@@ -522,11 +519,8 @@ func main() {
 	dijkstraPath := dijkstraGraph.Dijkstra(0, 3)
 	expectedDijkstraPath := []int{0, 2, 1, 3}
 
-	for i := range expectedDijkstraPath {
-
-		if dijkstraPath[i] != expectedDijkstraPath[i] || len(dijkstraPath) != len(expectedDijkstraPath) {
-			panic("dijkstra path")
-		}
+	if !slices.Equal(dijkstraPath, expectedDijkstraPath) {
+		panic("dijkstra path")
 	}
 
 	// LRU Cache
@@ -540,12 +534,12 @@ func main() {
 	}
 
 	// cache is {2=2, 1=1} (1 is most recently used)
-	lru.Put("3", 3) // evicts key 2, cache is {1=1, 3=3}
+	lru.Put("3", 3)                // evicts key 2, cache is {1=1, 3=3}
 	if _, ok := lru.Get("2"); ok { // returns not found
 		panic("lru evict")
 	}
 
-	lru.Put("4", 4) // evicts key 1, cache is {3=3, 4=4}
+	lru.Put("4", 4)                // evicts key 1, cache is {3=3, 4=4}
 	if _, ok := lru.Get("1"); ok { // returns not found
 		panic("lru evict 2")
 	}

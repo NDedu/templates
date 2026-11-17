@@ -6,26 +6,26 @@ package main
 // RecursiveSum - kills the stack for big numbers (stack overflow) as it has O(n) space complexity (each function called, even recursive, lives in the stack) (for loop sum has O(1) space)
 func RecursiveSum(n int) int {
 
-	// Base case
-	if n == 1 {
-		return 1
+	// Base case, <= so that 0 and negative n stop too (otherwise they never reach 1 and recurse forever)
+	if n <= 0 {
+		return 0
 	}
 
-	return n + RecursiveSum(n - 1) // returns n + (n - 1) + ((n - 1) - 1) + (((n - 1) - 1) - 1) + ... + 1
+	return n + RecursiveSum(n-1) // returns n + (n - 1) + ((n - 1) - 1) + (((n - 1) - 1) - 1) + ... + 1
 }
 
 // Maze Solver
 
 type Point struct {
-	x	int
-	y	int
+	x int
+	y int
 }
 
-func MazeSolver(maze []string, wall string, start, end Point) []Point {
+func MazeSolver(maze []string, wall byte, start, end Point) []Point {
 
 	seen := make([][]bool, len(maze))
 	for i := range seen {
-		seen[i] = make([]bool, len(maze[0]))
+		seen[i] = make([]bool, len(maze[i])) // Rows can have different lengths
 	}
 
 	path := []Point{}
@@ -39,15 +39,15 @@ func MazeSolver(maze []string, wall string, start, end Point) []Point {
 
 var dir = [4][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
 
-func walk(maze []string, wall string, curr, end Point, path *[]Point, seen [][]bool) bool {
+func walk(maze []string, wall byte, curr, end Point, path *[]Point, seen [][]bool) bool {
 
-	// Base case 1: off the map (outside of maze)
-	if curr.x < 0 || curr.x >= len(maze[0]) || curr.y < 0 || curr.y >= len(maze) {
+	// Base case 1: off the map (outside of maze). Row first, then the column within that row's own length
+	if curr.y < 0 || curr.y >= len(maze) || curr.x < 0 || curr.x >= len(maze[curr.y]) {
 		return false
 	}
 
 	// Base case 2: hit the wall
-	if string(maze[curr.y][curr.x]) == wall {
+	if maze[curr.y][curr.x] == wall {
 		return false
 	}
 
@@ -81,7 +81,7 @@ func walk(maze []string, wall string, curr, end Point, path *[]Point, seen [][]b
 	}
 
 	// post
-	*path = (*path)[:len(*path) - 1]
+	*path = (*path)[:len(*path)-1]
 
 	return false
 }

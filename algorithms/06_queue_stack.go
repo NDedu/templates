@@ -2,15 +2,15 @@ package main
 
 // Queue - First in first out
 type Queue struct {
-	Length	int
-	Head	*Node
-	Tail	*Node
+	Length int
+	Head   *Node
+	Tail   *Node
 }
 
 // Stack - Last in first out
 type Stack struct {
-	Length	int
-	Head	*Node
+	Length int
+	Head   *Node
 }
 
 // Queue FIFO - all operations O(1)
@@ -18,7 +18,7 @@ type Stack struct {
 // Enqueue - add element to the Queue
 func (queue *Queue) Enqueue(val int) {
 
-	newNode := &Node{ Value: val }
+	newNode := &Node{Value: val}
 
 	if queue.Length == 0 {
 

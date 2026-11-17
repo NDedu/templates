@@ -7,14 +7,23 @@ package main
 // When searching something you can compare to the root and then to nodes so you don't traverse the entire tree (binary search)
 
 type BSTNode struct {
-	Value	int
-	Left	*BSTNode
-	Right	*BSTNode
-	Parent	*BSTNode
+	Value  int
+	Left   *BSTNode
+	Right  *BSTNode
+	Parent *BSTNode
+}
+
+// BST - holds the root, so deleting the root node (or the last node, leaving an empty tree) can update it
+type BST struct {
+	Root *BSTNode
 }
 
 // Find - O(height)
-func (node *BSTNode) Find(val int) *BSTNode {
+func (tree *BST) Find(val int) *BSTNode {
+	return tree.Root.find(val)
+}
+
+func (node *BSTNode) find(val int) *BSTNode {
 
 	if node == nil {
 		return nil
@@ -23,14 +32,24 @@ func (node *BSTNode) Find(val int) *BSTNode {
 	if val == node.Value {
 		return node
 	} else if val < node.Value {
-		return node.Left.Find(val)
+		return node.Left.find(val)
 	} else {
-		return node.Right.Find(val)
+		return node.Right.find(val)
 	}
 }
 
 // Insert - O(h)
-func (node *BSTNode) Insert(val int) {
+func (tree *BST) Insert(val int) {
+
+	if tree.Root == nil {
+		tree.Root = &BSTNode{Value: val}
+		return
+	}
+
+	tree.Root.insert(val)
+}
+
+func (node *BSTNode) insert(val int) {
 
 	// Duplicate check
 	if val == node.Value {
@@ -40,23 +59,32 @@ func (node *BSTNode) Insert(val int) {
 	if val < node.Value {
 
 		if node.Left == nil {
-			node.Left = &BSTNode{ Value: val, Parent: node }
+			node.Left = &BSTNode{Value: val, Parent: node}
 		} else {
-			node.Left.Insert(val)
+			node.Left.insert(val)
 		}
 
 	} else {
 
 		if node.Right == nil {
-			node.Right = &BSTNode{ Value: val, Parent: node }
+			node.Right = &BSTNode{Value: val, Parent: node}
 		} else {
-			node.Right.Insert(val)
+			node.Right.insert(val)
 		}
 	}
 }
 
-// FindMin - goes left
-func (node *BSTNode) FindMin() *BSTNode {
+// FindMin - goes left, nil for an empty tree
+func (tree *BST) FindMin() *BSTNode {
+
+	if tree.Root == nil {
+		return nil
+	}
+
+	return tree.Root.findMin()
+}
+
+func (node *BSTNode) findMin() *BSTNode {
 
 	curr := node
 
@@ -67,23 +95,30 @@ func (node *BSTNode) FindMin() *BSTNode {
 	return curr
 }
 
-// Delete - O(h)
-func (node *BSTNode) Delete() {
+// Delete - O(h), returns false if val is not in the tree
+func (tree *BST) Delete(val int) bool {
 
+	node := tree.Find(val)
 	if node == nil {
-		return
+		return false
 	}
+
+	tree.deleteNode(node)
+	return true
+}
+
+func (tree *BST) deleteNode(node *BSTNode) {
 
 	// Node has 2 children
 	if node.Left != nil && node.Right != nil {
 
-		successor := node.Right.FindMin()
-		
+		successor := node.Right.findMin()
+
 		// Swap values
 		node.Value = successor.Value
-		
+
 		// Call delete to go to case where it has 0/1 children
-		successor.Delete()
+		tree.deleteNode(successor)
 		return
 	}
 
@@ -96,13 +131,13 @@ func (node *BSTNode) Delete() {
 	}
 
 	// Update parent to point to child
-	if node.Parent != nil {
-
-		if node.Parent.Left == node {
-			node.Parent.Left = child
-		} else {
-			node.Parent.Right = child
-		}
+	// The root has no parent: the tree's root pointer moves to the child instead (nil when it was the last node)
+	if node.Parent == nil {
+		tree.Root = child
+	} else if node.Parent.Left == node {
+		node.Parent.Left = child
+	} else {
+		node.Parent.Right = child
 	}
 
 	if child != nil {

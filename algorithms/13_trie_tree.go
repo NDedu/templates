@@ -14,19 +14,17 @@ package main
 //  / \   \            \
 // s   t   d            c
 //      \
-//       t
+//       l
 //        \
-//         l
-//          \
-//           e
+//         e
 
 type TrieNode struct {
-	Children	map[rune]*TrieNode
-	IsWord		bool
+	Children map[rune]*TrieNode
+	IsWord   bool
 }
 
 func NewTrieNode() *TrieNode {
-	return &TrieNode{ Children: map[rune]*TrieNode{} }
+	return &TrieNode{Children: map[rune]*TrieNode{}}
 }
 
 // Insert - O(l)
@@ -91,12 +89,14 @@ func (node *TrieNode) Delete(word string) bool {
 		return false
 	}
 
-	deleteWalk(node, word, 0)
+	// Runes, not bytes: Insert and Search walk the word rune by rune (for _, char := range word),
+	// and a non-ASCII character like é is one rune but two bytes
+	deleteWalk(node, []rune(word), 0)
 	return true
 }
 
 // deleteWalk returns true if the parent should remove this child
-func deleteWalk(curr *TrieNode, word string, depth int) bool {
+func deleteWalk(curr *TrieNode, word []rune, depth int) bool {
 
 	if curr == nil {
 		return false
@@ -116,13 +116,13 @@ func deleteWalk(curr *TrieNode, word string, depth int) bool {
 		return len(curr.Children) == 0
 	}
 
-	char := rune(word[depth])
+	char := word[depth]
 	child, ok := curr.Children[char]
 	if !ok {
 		return false
 	}
 
-	shouldDeleteNodes := deleteWalk(child, word, depth + 1)
+	shouldDeleteNodes := deleteWalk(child, word, depth+1)
 
 	if shouldDeleteNodes {
 
